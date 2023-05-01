@@ -13,9 +13,20 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-			<div class="navbar-nav">
+			<div class="navbar-nav" style="align-items: center">
 				<a class="nav-item nav-link" href="/urls">My URLs</a>
 				<a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+
+				<form style="display: flex" method="POST" action="/login">
+					<input
+						class="form-control"
+						type="text"
+						name="username"
+						placeholder="Username"
+						style="width: 300px; margin-right: 1em"
+					/>
+					<button type="submit" class="btn btn-primary">Login</button>
+				</form>
 			</div>
 		</div>
 	</nav>
