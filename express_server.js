@@ -88,6 +88,26 @@ app.post("/urls/:id/delete", (req, res) => {
 	res.redirect("/urls");
 });
 
+// app.post("/urls/:id", (req, res) => {
+// 	const templateVars = {
+// 		id: req.params.id,
+// 		longURL: urlDatabase[req.params.id],
+// 	};
+// 	res.redirect("/urls");
+// 	//res.render("urls_show", templateVars);
+// });
+
+app.post("/urls/:id", (req, res) => {
+	const shortURL = req.params.id;
+	const longURL = req.body.longURL;
+
+	if (urlDatabase.hasOwnProperty(shortURL)) {
+		urlDatabase[shortURL] = longURL;
+	}
+
+	res.redirect("/urls");
+});
+
 app.listen(PORT, () => {
 	console.log(`Example app listening on port ${PORT}!`);
 });
