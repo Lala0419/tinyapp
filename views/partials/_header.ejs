@@ -17,8 +17,18 @@
 				<a class="nav-item nav-link" href="/urls">My URLs</a>
 				<a class="nav-item nav-link" href="/urls/new">Create New URL</a>
 				<% if(username){ %>
-				<p>Logged in as: <%= username %> !</p>
-				<button type="submit" class="btn btn-primary">Logout</button>
+				<span>Logged in as: <%= username %> !</span>
+				<form
+					action="/logout"
+					method="POST"
+					style="
+						margin-left: 2rem;
+						border: 1px solid #007bff;
+						border-radius: 0.25rem;
+					"
+				>
+					<button type="submit" class="btn">Logout</button>
+				</form>
 				<% }else{ %>
 				<form style="display: flex" method="POST" action="/login">
 					<input
