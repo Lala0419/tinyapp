@@ -16,15 +16,15 @@
 			<div class="navbar-nav" style="align-items: center">
 				<a class="nav-item nav-link" href="/urls">My URLs</a>
 				<a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-				<% if(username){ %>
-				<span>Logged in as: <%= username %> !</span>
+				<% if(user){ %>
+				<span>Logged in as: <%= user.email %> !</span>
 				<form
 					action="/logout"
 					method="POST"
 					style="
-						margin-left: 2rem;
-						border: 1px solid #007bff;
-						border-radius: 0.25rem;
+						margin-left: 32px;
+						border: 0.0625rem solid #007bff;
+						border-radius: 4px;
 					"
 				>
 					<button type="submit" class="btn">Logout</button>
@@ -36,7 +36,7 @@
 						type="text"
 						name="username"
 						placeholder="Username"
-						style="width: 300px; margin-right: 1em"
+						style="width: 18.75rem; margin-right: 1em"
 					/>
 					<button type="submit" class="btn btn-primary">Login</button>
 				</form>
