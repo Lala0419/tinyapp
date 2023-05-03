@@ -152,6 +152,21 @@ app.post("/registration", (req, res) => {
 	const id = generateRandomString();
 	const { email, password } = req.body;
 
+	// Check if email or password are empty
+	if (!email || !password) {
+		res.status(400).send("Email and password cannot be empty");
+		return;
+	}
+
+	// Check if email is already registered
+	for (const userId in users) {
+		if (users[userId].email === email) {
+			res.status(400).send("Email already registered");
+			return;
+		}
+	}
+
+	//Create a new user object
 	const newUser = {
 		id,
 		email,
