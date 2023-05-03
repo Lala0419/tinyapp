@@ -150,6 +150,16 @@ app.get("/register", (req, res) => {
 	res.render("register", { user: null });
 });
 
+// Helper function to get user object by email
+const getUserByEmail = (email) => {
+	for (const userId in users) {
+		if (users[userId].email === email) {
+			return true;
+		}
+	}
+	return false;
+};
+
 app.post("/register", (req, res) => {
 	console.log(req.body);
 	const id = generateRandomString();
@@ -162,11 +172,9 @@ app.post("/register", (req, res) => {
 	}
 
 	// Check if email is already registered
-	for (const userId in users) {
-		if (users[userId].email === email) {
-			res.status(400).send("Email already registered");
-			return;
-		}
+	if (getUserByEmail(email)) {
+		res.status(400).send("Email already registered");
+		return;
 	}
 
 	//Create a new user object
