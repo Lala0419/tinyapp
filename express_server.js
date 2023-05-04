@@ -134,6 +134,9 @@ app.post("/urls/:id", (req, res) => {
 
 	res.redirect("/urls");
 });
+app.get("/login", (req, res) => {
+	res.render("login", { user: null });
+});
 
 app.post("/login", (req, res) => {
 	const user_id = req.body.username;
