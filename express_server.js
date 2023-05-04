@@ -21,6 +21,16 @@ function generateRandomString() {
 	return result;
 }
 
+// Helper function to get user object by email
+const getUserByEmail = (email) => {
+	for (const userId in users) {
+		if (users[userId].email === email) {
+			return users[userId];
+		}
+	}
+	return null;
+};
+
 const urlDatabase = {
 	b2xVn2: "http://www.lighthouselabs.ca",
 	"9sm5xK": "http://www.google.com",
@@ -139,9 +149,24 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-	const user_id = req.body.username;
-	res.cookie("user_id", user_id);
-	res.redirect("/urls");
+	const { email, password } = req.body;
+
+	const user = getUserByEmail(email);
+
+	if (!user) {
+		res
+			.status(403)
+			.send(
+				"Email adress was not found... Please check the spelling and try again!"
+			);
+	} else if (password !== user.password) {
+		res
+			.status(403)
+			.send("Password was Invalid... Please check the spelling and try again!");
+	} else {
+		res.cookie("user_id", user.id);
+		res.redirect("/urls");
+	}
 });
 
 app.post("/logout", (req, res) => {
@@ -152,16 +177,6 @@ app.post("/logout", (req, res) => {
 app.get("/register", (req, res) => {
 	res.render("register", { user: null });
 });
-
-// Helper function to get user object by email
-const getUserByEmail = (email) => {
-	for (const userId in users) {
-		if (users[userId].email === email) {
-			return true;
-		}
-	}
-	return false;
-};
 
 app.post("/register", (req, res) => {
 	console.log(req.body);
