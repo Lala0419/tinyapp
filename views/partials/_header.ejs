@@ -30,16 +30,27 @@
 					<button type="submit" class="btn">Logout</button>
 				</form>
 				<% }else{ %>
-				<form style="display: flex" method="POST" action="/login">
-					<input
-						class="form-control"
-						type="text"
-						name="username"
-						placeholder="Username"
-						style="width: 18.75rem; margin-right: 1em"
-					/>
-					<button type="submit" class="btn btn-primary">Login</button>
-				</form>
+				<a
+					href="/login"
+					style="
+						margin-left: 32px;
+						border: 0.0625rem solid #007bff;
+						border-radius: 4px;
+						padding: 0.5rem 1rem;
+					"
+					>Login</a
+				>
+				<a
+					href="/register"
+					style="
+						margin-left: 32px;
+						border: 0.0625rem solid #007bff;
+						border-radius: 4px;
+						padding: 0.5rem 1rem;
+					"
+					>Register</a
+				>
+
 				<% } %>
 			</div>
 		</div>
