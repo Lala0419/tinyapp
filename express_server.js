@@ -32,10 +32,16 @@ const getUserByEmail = (email) => {
 };
 
 const urlDatabase = {
-	b2xVn2: "http://www.lighthouselabs.ca",
-	"9sm5xK": "http://www.google.com",
+	b6UTxQ: {
+		longURL: "https://www.tsn.ca",
+		userID: "aJ48lW",
+	},
+	i3BoGr: {
+		longURL: "https://www.google.ca",
+		userID: "aJ48lW",
+	},
 };
-
+console.log("urlDatabase:", urlDatabase);
 const users = {
 	userRandomID: {
 		id: "userRandomID",
@@ -67,7 +73,7 @@ app.get("/urls/new", (req, res) => {
 	if (userId) {
 		res.render("urls_new", templateVars);
 	} else {
-		res.redirect("/urls");
+		res.redirect("/login");
 	}
 });
 
@@ -75,7 +81,7 @@ app.get("/urls/:id", (req, res) => {
 	const templateVars = {
 		user: users[req.cookies.user_id],
 		id: req.params.id,
-		longURL: urlDatabase[req.params.id],
+		longURL: urlDatabase[req.params.id].longURL,
 		urls: urlDatabase,
 	};
 	res.render("urls_show", templateVars);
@@ -87,18 +93,20 @@ app.post("/urls", (req, res) => {
 	const longURL = req.body.longURL;
 	const userId = req.cookies.user_id;
 	if (userId) {
-		urlDatabase[id] = longURL;
+		urlDatabase[id].longURL = longURL;
 		res.redirect(`/urls/${id}`);
 	} else {
-		res.send(
-			"You need to register or login to your account in order to shorten URL!"
-		);
+		res
+			.status(400)
+			.send(
+				"You need to register or login to your account in order to shorten URL!"
+			);
 	}
 });
 
 app.get("/u/:id", (req, res) => {
 	const shortURL = req.params.id;
-	const longURL = urlDatabase[shortURL];
+	const longURL = urlDatabase[shortURL].longURL;
 
 	if (longURL) {
 		res.redirect(longURL);
@@ -120,13 +128,18 @@ app.post("/urls/:id", (req, res) => {
 	const longURL = req.body.longURL;
 
 	if (urlDatabase.hasOwnProperty(shortURL)) {
-		urlDatabase[shortURL] = longURL;
+		urlDatabase[shortURL].longURL = longURL;
 	}
 
 	res.redirect("/urls");
 });
 app.get("/login", (req, res) => {
-	res.render("login", { user: null });
+	const userId = req.cookies.user_id;
+	if (userId) {
+		res.redirect("/urls");
+	} else {
+		res.render("login", { user: null });
+	}
 });
 
 app.post("/login", (req, res) => {
@@ -156,7 +169,12 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-	res.render("register", { user: null });
+	const userId = req.cookies.user_id;
+	if (userId) {
+		res.redirect("/urls");
+	} else {
+		res.render("register", { user: null });
+	}
 });
 
 app.post("/register", (req, res) => {
