@@ -49,25 +49,11 @@ const users = {
 	},
 };
 
-app.get("/", (req, res) => {
-	res.send("Hello!");
-});
-
-app.get("/urls.json", (req, res) => {
-	res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-	res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 app.get("/urls", (req, res) => {
-	console.log("userid", req.cookies.user_id);
 	const templateVars = {
 		user: users[req.cookies.user_id],
 		urls: urlDatabase,
 	};
-	console.log(templateVars.user);
 	res.render("urls_index", templateVars);
 });
 
@@ -76,7 +62,6 @@ app.get("/urls/new", (req, res) => {
 		user: users[req.cookies.user_id],
 		urls: urlDatabase,
 	};
-
 	res.render("urls_new", templateVars);
 });
 
@@ -91,18 +76,9 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-	console.log(req.body); // Log the POST request body to the console
-	// const urlDatabase = {
-	// 	id: generateRandomString(),
-	// 	longURL: req.body.longURL,
-	// };
-	// res.render("urls_show", urlDatabase);
-	//^^ doenst save in the url_show page
-
 	const id = generateRandomString();
 	const longURL = req.body.longURL;
 	urlDatabase[id] = longURL;
-	//console.log(`id and longURL: ${id}, ${longURL}`);
 	res.redirect(`/urls/${id}`);
 });
 
@@ -124,15 +100,6 @@ app.post("/urls/:id/delete", (req, res) => {
 	}
 	res.redirect("/urls");
 });
-
-// app.post("/urls/:id", (req, res) => {
-// 	const templateVars = {
-// 		id: req.params.id,
-// 		longURL: urlDatabase[req.params.id],
-// 	};
-// 	res.redirect("/urls");
-// 	//res.render("urls_show", templateVars);
-// });
 
 app.post("/urls/:id", (req, res) => {
 	const shortURL = req.params.id;
@@ -171,7 +138,6 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
 	res.clearCookie("user_id");
-	//res.render("login", { user: null });
 	res.redirect("/login");
 });
 
@@ -180,7 +146,6 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-	console.log(req.body);
 	const id = generateRandomString();
 	const { email, password } = req.body;
 
@@ -203,9 +168,7 @@ app.post("/register", (req, res) => {
 		password,
 	};
 	users[id] = newUser;
-	console.log(newUser);
 	res.cookie("user_id", newUser["id"]);
-	console.log(users);
 	res.redirect("/urls");
 });
 
