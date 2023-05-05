@@ -58,11 +58,17 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+	const userId = req.cookies.user_id;
+	console.log(`userId, ${userId}`);
 	const templateVars = {
-		user: users[req.cookies.user_id],
+		user: users[userId],
 		urls: urlDatabase,
 	};
-	res.render("urls_new", templateVars);
+	if (userId) {
+		res.render("urls_new", templateVars);
+	} else {
+		res.redirect("/urls");
+	}
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -76,10 +82,18 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+	console.log(`req body:`, req.body);
 	const id = generateRandomString();
 	const longURL = req.body.longURL;
-	urlDatabase[id] = longURL;
-	res.redirect(`/urls/${id}`);
+	const userId = req.cookies.user_id;
+	if (userId) {
+		urlDatabase[id] = longURL;
+		res.redirect(`/urls/${id}`);
+	} else {
+		res.send(
+			"You need to register or login to your account in order to shorten URL!"
+		);
+	}
 });
 
 app.get("/u/:id", (req, res) => {
