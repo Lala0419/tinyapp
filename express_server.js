@@ -86,7 +86,7 @@ const getUserByEmail = (email) => {
 	return null;
 };
 
-//To check i
+//To get return URLs where userID equals id of logged in user
 const urlsForUser = function (id) {
 	const filteredUrls = {};
 	for (const url in urlDatabase) {
@@ -131,6 +131,10 @@ app.get("/urls/new", (req, res) => {
 
 //SHOW SHOW PAGE
 app.get("/urls/:id", (req, res) => {
+	//Chech to see if the current loggedin user owns the URL
+	if (urlDatabase[req.params.id].userID !== req.cookies.user_id) {
+		return res.status(403).send("This URL does not belong to you!");
+	}
 	const templateVars = {
 		user: users[req.cookies.user_id],
 		id: req.params.id,
