@@ -28,34 +28,6 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 /////////////////////////////////////////////////////////////////////
-// Helper functions
-/////////////////////////////////////////////////////////////////////
-
-//To genarate ID
-function generateRandomString() {
-	let result = "";
-	const characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	const length = 6;
-
-	for (let i = 0; i < length; i++) {
-		const randomIndex = Math.floor(Math.random() * characters.length);
-		result += characters.charAt(randomIndex);
-	}
-	return result;
-}
-
-// To get user object by email
-const getUserByEmail = (email) => {
-	for (const userId in users) {
-		if (users[userId].email === email) {
-			return users[userId];
-		}
-	}
-	return null;
-};
-
-/////////////////////////////////////////////////////////////////////
 // Database
 /////////////////////////////////////////////////////////////////////
 
@@ -85,6 +57,36 @@ const users = {
 		password: "dishwasher-funk",
 	},
 };
+
+/////////////////////////////////////////////////////////////////////
+// Helper functions
+/////////////////////////////////////////////////////////////////////
+
+//To genarate ID
+function generateRandomString() {
+	let result = "";
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const length = 6;
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length);
+		result += characters.charAt(randomIndex);
+	}
+	return result;
+}
+
+// To get user object by email
+const getUserByEmail = (email) => {
+	for (const userId in users) {
+		if (users[userId].email === email) {
+			return users[userId];
+		}
+	}
+	return null;
+};
+
+//To check the userID is equal to the id of the currently logged-in user.
 
 /////////////////////////////////////////////////////////////////////
 // Routes

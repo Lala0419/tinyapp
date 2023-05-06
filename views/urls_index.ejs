@@ -3,6 +3,9 @@
 	</head>
 	<body>
 		<%- include('partials/_header') %>
+		<% if(!user){ %>
+			<h2>Lease log in or register first</h2>
+		<% }else{ %>
 		<main style="margin: 1em">
 			<h3>My URLs</h3>
 			<table class="table">
@@ -34,6 +37,7 @@
 				</tbody>
 			</table>
 		</main>
+		<% } %>
 	</body>
 	<%- include('partials/_script') %>
 </html>
