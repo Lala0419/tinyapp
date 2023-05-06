@@ -121,6 +121,7 @@ app.get("/urls/:id", (req, res) => {
 		user: users[req.cookies.user_id],
 		id: req.params.id,
 		longURL: urlDatabase[req.params.id].longURL,
+		userID: urlDatabase[req.params.id].userID,
 		urls: urlDatabase,
 	};
 	res.render("urls_show", templateVars);
@@ -133,7 +134,10 @@ app.post("/urls", (req, res) => {
 	const longURL = req.body.longURL;
 	const userId = req.cookies.user_id;
 	if (userId) {
-		urlDatabase[id].longURL = longURL;
+		urlDatabase[id] = {
+			longURL,
+			userId,
+		};
 		res.redirect(`/urls/${id}`);
 	} else {
 		res
@@ -159,8 +163,14 @@ app.get("/u/:id", (req, res) => {
 //DELETE URL
 app.post("/urls/:id/delete", (req, res) => {
 	const shortURL = req.params.id;
+	const userID = req.cookies.user_id;
 	if (urlDatabase.hasOwnProperty(shortURL)) {
-		delete urlDatabase[shortURL];
+		const url = urlDatabase[shortURL];
+		if (url.userID === userID) {
+			delete urlDatabase[shortURL];
+		} else {
+			res.status(403).send("You do not have permission to delete this URL");
+		}
 	}
 	res.redirect("/urls");
 });
@@ -169,11 +179,15 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id", (req, res) => {
 	const shortURL = req.params.id;
 	const longURL = req.body.longURL;
-
+	const userID = req.cookies.user_id;
 	if (urlDatabase.hasOwnProperty(shortURL)) {
-		urlDatabase[shortURL].longURL = longURL;
+		const url = urlDatabase[shortURL];
+		if (url.userID === userID) {
+			urlDatabase[shortURL].longURL = longURL;
+		} else {
+			res.status(403).send("You do not have permission to edit this URL");
+		}
 	}
-
 	res.redirect("/urls");
 });
 
