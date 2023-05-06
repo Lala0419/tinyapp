@@ -86,17 +86,29 @@ const getUserByEmail = (email) => {
 	return null;
 };
 
-//To check the userID is equal to the id of the currently logged-in user.
-
+//To check i
+const urlsForUser = function (id) {
+	const filteredUrls = {};
+	for (const url in urlDatabase) {
+		console.log(urlDatabase, urlDatabase[url]);
+		if (urlDatabase[url].userID === id) {
+			filteredUrls[url] = urlDatabase[url];
+		}
+	}
+	console.log(`filteredUrls: ${filteredUrls}`);
+	return filteredUrls;
+};
 /////////////////////////////////////////////////////////////////////
 // Routes
 /////////////////////////////////////////////////////////////////////
 
 //SHOW RANDING PAGE
 app.get("/urls", (req, res) => {
+	const userId = req.cookies.user_id;
+	const userURL = urlsForUser(userId);
 	const templateVars = {
 		user: users[req.cookies.user_id],
-		urls: urlDatabase,
+		urls: userURL,
 	};
 	res.render("urls_index", templateVars);
 });
@@ -134,11 +146,11 @@ app.post("/urls", (req, res) => {
 	console.log(`req body:`, req.body);
 	const id = generateRandomString();
 	const longURL = req.body.longURL;
-	const userId = req.cookies.user_id;
-	if (userId) {
+	const userID = req.cookies.user_id;
+	if (userID) {
 		urlDatabase[id] = {
 			longURL,
-			userId,
+			userID,
 		};
 		res.redirect(`/urls/${id}`);
 	} else {
