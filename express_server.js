@@ -1,15 +1,37 @@
+/////////////////////////////////////////////////////////////////////
+// Requires
+/////////////////////////////////////////////////////////////////////
+
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 
+/////////////////////////////////////////////////////////////////////
+// Initialization
+/////////////////////////////////////////////////////////////////////
+
 const app = express();
 const PORT = 8080; // default port 8080
 
+/////////////////////////////////////////////////////////////////////
+// Configuration
+/////////////////////////////////////////////////////////////////////
+
 app.set("view engine", "ejs");
+
+/////////////////////////////////////////////////////////////////////
+// Middleware
+/////////////////////////////////////////////////////////////////////
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
+/////////////////////////////////////////////////////////////////////
+// Helper functions
+/////////////////////////////////////////////////////////////////////
+
+//To genarate ID
 function generateRandomString() {
 	let result = "";
 	const characters =
@@ -20,11 +42,10 @@ function generateRandomString() {
 		const randomIndex = Math.floor(Math.random() * characters.length);
 		result += characters.charAt(randomIndex);
 	}
-
 	return result;
 }
 
-// Helper function to get user object by email
+// To get user object by email
 const getUserByEmail = (email) => {
 	for (const userId in users) {
 		if (users[userId].email === email) {
@@ -34,6 +55,11 @@ const getUserByEmail = (email) => {
 	return null;
 };
 
+/////////////////////////////////////////////////////////////////////
+// Database
+/////////////////////////////////////////////////////////////////////
+
+//For URLs
 const urlDatabase = {
 	b6UTxQ: {
 		longURL: "https://www.tsn.ca",
@@ -45,6 +71,8 @@ const urlDatabase = {
 	},
 };
 console.log("urlDatabase:", urlDatabase);
+
+//For users
 const users = {
 	userRandomID: {
 		id: "userRandomID",
@@ -58,6 +86,11 @@ const users = {
 	},
 };
 
+/////////////////////////////////////////////////////////////////////
+// Routes
+/////////////////////////////////////////////////////////////////////
+
+//SHOW RANDING PAGE
 app.get("/urls", (req, res) => {
 	const templateVars = {
 		user: users[req.cookies.user_id],
@@ -66,6 +99,7 @@ app.get("/urls", (req, res) => {
 	res.render("urls_index", templateVars);
 });
 
+//SHOW NEW OR LOGIN PAGE
 app.get("/urls/new", (req, res) => {
 	const userId = req.cookies.user_id;
 	console.log(`userId, ${userId}`);
@@ -73,6 +107,7 @@ app.get("/urls/new", (req, res) => {
 		user: users[userId],
 		urls: urlDatabase,
 	};
+	//Check to see if a user is logged in
 	if (userId) {
 		res.render("urls_new", templateVars);
 	} else {
@@ -80,6 +115,7 @@ app.get("/urls/new", (req, res) => {
 	}
 });
 
+//SHOW SHOW PAGE
 app.get("/urls/:id", (req, res) => {
 	const templateVars = {
 		user: users[req.cookies.user_id],
@@ -90,6 +126,7 @@ app.get("/urls/:id", (req, res) => {
 	res.render("urls_show", templateVars);
 });
 
+//CREATE URL
 app.post("/urls", (req, res) => {
 	console.log(`req body:`, req.body);
 	const id = generateRandomString();
@@ -107,6 +144,7 @@ app.post("/urls", (req, res) => {
 	}
 });
 
+//REDIRECT URL
 app.get("/u/:id", (req, res) => {
 	const shortURL = req.params.id;
 	const longURL = urlDatabase[shortURL].longURL;
@@ -118,6 +156,7 @@ app.get("/u/:id", (req, res) => {
 	}
 });
 
+//DELETE URL
 app.post("/urls/:id/delete", (req, res) => {
 	const shortURL = req.params.id;
 	if (urlDatabase.hasOwnProperty(shortURL)) {
@@ -126,6 +165,7 @@ app.post("/urls/:id/delete", (req, res) => {
 	res.redirect("/urls");
 });
 
+//UPDATE URL
 app.post("/urls/:id", (req, res) => {
 	const shortURL = req.params.id;
 	const longURL = req.body.longURL;
@@ -136,8 +176,12 @@ app.post("/urls/:id", (req, res) => {
 
 	res.redirect("/urls");
 });
+
+//SHOW LOGIN PAGE
 app.get("/login", (req, res) => {
 	const userId = req.cookies.user_id;
+
+	//Check to see if the user is the user is logged in
 	if (userId) {
 		res.redirect("/urls");
 	} else {
@@ -145,11 +189,13 @@ app.get("/login", (req, res) => {
 	}
 });
 
+//LOGIN
 app.post("/login", (req, res) => {
 	const { email, password } = req.body;
 
 	const user = getUserByEmail(email);
 
+	//Check to see the user info is correct
 	if (!user) {
 		res
 			.status(403)
@@ -166,11 +212,13 @@ app.post("/login", (req, res) => {
 	}
 });
 
+//LOGOUT
 app.post("/logout", (req, res) => {
 	res.clearCookie("user_id");
 	res.redirect("/login");
 });
 
+//SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
 	const userId = req.cookies.user_id;
 	if (userId) {
@@ -180,6 +228,7 @@ app.get("/register", (req, res) => {
 	}
 });
 
+//REGISTER
 app.post("/register", (req, res) => {
 	const id = generateRandomString();
 	const { email, password } = req.body;
@@ -206,6 +255,10 @@ app.post("/register", (req, res) => {
 	res.cookie("user_id", newUser["id"]);
 	res.redirect("/urls");
 });
+
+/////////////////////////////////////////////////////////////////////
+// Listener
+/////////////////////////////////////////////////////////////////////
 
 app.listen(PORT, () => {
 	console.log(`Example app listening on port ${PORT}!`);
