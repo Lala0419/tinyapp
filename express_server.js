@@ -5,7 +5,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-
+const bcrypt = require("bcryptjs");
 /////////////////////////////////////////////////////////////////////
 // Initialization
 /////////////////////////////////////////////////////////////////////
@@ -224,8 +224,8 @@ app.get("/login", (req, res) => {
 //LOGIN
 app.post("/login", (req, res) => {
 	const { email, password } = req.body;
-
 	const user = getUserByEmail(email);
+	const readPassword = bcrypt.compareSync(password, user.password);
 
 	//Check to see the user info is correct
 	if (!user) {
@@ -234,7 +234,7 @@ app.post("/login", (req, res) => {
 			.send(
 				"Email adress was not found... Please check the spelling and try again!"
 			);
-	} else if (password !== user.password) {
+	} else if (!readPassword) {
 		res
 			.status(403)
 			.send("Password was Invalid... Please check the spelling and try again!");
@@ -264,9 +264,12 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
 	const id = generateRandomString();
 	const { email, password } = req.body;
+	console.log(`req.body: ${email}, ${password}`);
+	const hashedPassword = bcrypt.hashSync(password, 10);
+	console.log(hashedPassword);
 
 	// Check if email or password are empty
-	if (!email || !password) {
+	if (!email || !hashedPassword) {
 		res.status(400).send("Email and password cannot be empty");
 		return;
 	}
@@ -281,7 +284,7 @@ app.post("/register", (req, res) => {
 	const newUser = {
 		id,
 		email,
-		password,
+		password: hashedPassword,
 	};
 	users[id] = newUser;
 	res.cookie("user_id", newUser["id"]);
