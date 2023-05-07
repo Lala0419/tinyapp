@@ -74,6 +74,16 @@ const users = {
 /////////////////////////////////////////////////////////////////////
 // Routes
 /////////////////////////////////////////////////////////////////////
+ß;
+//ROOTS
+app.get("/", (req, res) => {
+	const userId = req.session.user_id;
+	if (userId) {
+		return res.redirect("/urls");
+	}
+
+	res.redirect("/login");
+});
 
 //SHOW RANDING PAGE
 app.get("/urls", (req, res) => {
