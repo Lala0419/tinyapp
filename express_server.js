@@ -85,10 +85,10 @@ function generateRandomString() {
 }
 
 // To get user object by email
-const getUserByEmail = (email) => {
-	for (const userId in users) {
-		if (users[userId].email === email) {
-			return users[userId];
+const getUserByEmail = (email, database) => {
+	for (const userId in database) {
+		if (database[userId].email === email) {
+			return database[userId];
 		}
 	}
 	return null;
@@ -232,7 +232,7 @@ app.get("/login", (req, res) => {
 //LOGIN
 app.post("/login", (req, res) => {
 	const { email, password } = req.body;
-	const user = getUserByEmail(email);
+	const user = getUserByEmail(email, users);
 	const readPassword = bcrypt.compareSync(password, user.password);
 
 	//Check to see the user info is correct
@@ -283,7 +283,7 @@ app.post("/register", (req, res) => {
 	}
 
 	// Check if email is already registered
-	if (getUserByEmail(email)) {
+	if (getUserByEmail(email, users)) {
 		res.status(400).send("Email already registered");
 		return;
 	}
