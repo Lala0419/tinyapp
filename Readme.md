@@ -2,35 +2,33 @@
 
 TinyApp is a full stack web application built with Node and Express that allows users to shorten long URLs (à la bit.ly).
 
-## How to use?
+## Instructions
 
-### !["Register first!"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
+### Step 1: Register
+### ![](https://github.com/Lala0419/tinyapp/blob/master/docs/register.png)
 
-### and login..
-
-!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
+### Step 2: Login
+![](https://github.com/Lala0419/tinyapp/blob/master/docs/login.png)
 
 ### You are logged in :)
+![](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
 
-!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
+## Features
 
-### create new URL!
+### Want to create new URL?
+!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/new_url.png)
 
-!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
+###  Ta-da!
+!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/urls.png)
 
-### Ta-da!
-
-!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
-
-### wanna edit?
-
-!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
+### Want to edit your URL?
+!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/edit_url.png)
 
 ### Voila!
-
-!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/url.png)
+!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/urls_edit.png)
 
 ## Final Product
+!["Landing Page"](https://github.com/Lala0419/tinyapp/blob/master/docs/final_product.gif)
 
 ## Dependencies
 
