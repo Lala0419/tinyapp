@@ -27,9 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
 	cookieSession({
 		name: "session",
-		keys: [
-			/* secret keys */
-		],
+		keys: ["key1", "key2"],
 
 		// Cookie Options
 		maxAge: 24 * 60 * 60 * 1000, // 24 hours
@@ -114,10 +112,10 @@ const urlsForUser = function (id) {
 
 //SHOW RANDING PAGE
 app.get("/urls", (req, res) => {
-	const userId = req.cookies.user_id;
+	const userId = req.session.user_id;
 	const userURL = urlsForUser(userId);
 	const templateVars = {
-		user: users[req.cookies.user_id],
+		user: users[req.session.user_id],
 		urls: userURL,
 	};
 	res.render("urls_index", templateVars);
@@ -125,7 +123,7 @@ app.get("/urls", (req, res) => {
 
 //SHOW NEW OR LOGIN PAGE
 app.get("/urls/new", (req, res) => {
-	const userId = req.cookies.user_id;
+	const userId = req.session.user_id;
 	console.log(`userId, ${userId}`);
 	const templateVars = {
 		user: users[userId],
@@ -142,11 +140,11 @@ app.get("/urls/new", (req, res) => {
 //SHOW SHOW PAGE
 app.get("/urls/:id", (req, res) => {
 	//Chech to see if the current loggedin user owns the URL
-	if (urlDatabase[req.params.id].userID !== req.cookies.user_id) {
+	if (urlDatabase[req.params.id].userID !== req.session.user_id) {
 		return res.status(403).send("This URL does not belong to you!");
 	}
 	const templateVars = {
-		user: users[req.cookies.user_id],
+		user: users[req.session.user_id],
 		id: req.params.id,
 		longURL: urlDatabase[req.params.id].longURL,
 		userID: urlDatabase[req.params.id].userID,
@@ -160,7 +158,7 @@ app.post("/urls", (req, res) => {
 	console.log(`req body:`, req.body);
 	const id = generateRandomString();
 	const longURL = req.body.longURL;
-	const userID = req.cookies.user_id;
+	const userID = req.session.user_id;
 	if (userID) {
 		urlDatabase[id] = {
 			longURL,
@@ -191,7 +189,7 @@ app.get("/u/:id", (req, res) => {
 //DELETE URL
 app.post("/urls/:id/delete", (req, res) => {
 	const shortURL = req.params.id;
-	const userID = req.cookies.user_id;
+	const userID = req.session.user_id;
 	if (urlDatabase.hasOwnProperty(shortURL)) {
 		const url = urlDatabase[shortURL];
 		if (url.userID === userID) {
@@ -207,7 +205,7 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id", (req, res) => {
 	const shortURL = req.params.id;
 	const longURL = req.body.longURL;
-	const userID = req.cookies.user_id;
+	const userID = req.session.user_id;
 	if (urlDatabase.hasOwnProperty(shortURL)) {
 		const url = urlDatabase[shortURL];
 		if (url.userID === userID) {
@@ -221,7 +219,7 @@ app.post("/urls/:id", (req, res) => {
 
 //SHOW LOGIN PAGE
 app.get("/login", (req, res) => {
-	const userId = req.cookies.user_id;
+	const userId = req.session.user_id;
 
 	//Check to see if the user is the user is logged in
 	if (userId) {
@@ -249,20 +247,20 @@ app.post("/login", (req, res) => {
 			.status(403)
 			.send("Password was Invalid... Please check the spelling and try again!");
 	} else {
-		res.cookie("user_id", user.id);
+		req.session.user_id = user.id;
 		res.redirect("/urls");
 	}
 });
 
 //LOGOUT
 app.post("/logout", (req, res) => {
-	res.clearCookie("user_id");
+	req.session = null;
 	res.redirect("/login");
 });
 
 //SHOW REGISTER PAGE
 app.get("/register", (req, res) => {
-	const userId = req.cookies.user_id;
+	const userId = req.session.user_id;
 	if (userId) {
 		res.redirect("/urls");
 	} else {
@@ -297,7 +295,7 @@ app.post("/register", (req, res) => {
 		password: hashedPassword,
 	};
 	users[id] = newUser;
-	res.cookie("user_id", newUser["id"]);
+	req.session.user_id = newUser["id"];
 	res.redirect("/urls");
 });
 
