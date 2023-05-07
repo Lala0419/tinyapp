@@ -6,6 +6,7 @@ const express = require("express");
 const cookieSession = require("cookie-session");
 const morgan = require("morgan");
 const bcrypt = require("bcryptjs");
+const getUserByEmail = require("./helpers");
 /////////////////////////////////////////////////////////////////////
 // Initialization
 /////////////////////////////////////////////////////////////////////
@@ -84,15 +85,15 @@ function generateRandomString() {
 	return result;
 }
 
-// To get user object by email
-const getUserByEmail = (email, database) => {
-	for (const userId in database) {
-		if (database[userId].email === email) {
-			return database[userId];
-		}
-	}
-	return null;
-};
+// // To get user object by email
+// const getUserByEmail = (email, database) => {
+// 	for (const userId in database) {
+// 		if (database[userId].email === email) {
+// 			return database[userId];
+// 		}
+// 	}
+// 	return null;
+// };
 
 //To get return URLs where userID equals id of logged in user
 const urlsForUser = function (id) {
