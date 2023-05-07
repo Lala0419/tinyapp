@@ -219,7 +219,6 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
 	const { email, password } = req.body;
 	const user = getUserByEmail(email, users);
-	const readPassword = bcrypt.compareSync(password, user.password);
 
 	//Check to see the user info is correct
 	if (!user) {
@@ -228,14 +227,16 @@ app.post("/login", (req, res) => {
 			.send(
 				"Email adress was not found... Please check the spelling and try again!"
 			);
-	} else if (!readPassword) {
+	}
+
+	const readPassword = bcrypt.compareSync(password, user.password);
+	if (!readPassword) {
 		res
 			.status(403)
 			.send("Password was Invalid... Please check the spelling and try again!");
-	} else {
-		req.session.user_id = user.id;
-		res.redirect("/urls");
 	}
+	req.session.user_id = user.id;
+	res.redirect("/urls");
 });
 
 //LOGOUT
