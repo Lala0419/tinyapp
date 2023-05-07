@@ -6,7 +6,11 @@ const express = require("express");
 const cookieSession = require("cookie-session");
 const morgan = require("morgan");
 const bcrypt = require("bcryptjs");
-const getUserByEmail = require("./helpers");
+const {
+	getUserByEmail,
+	generateRandomString,
+	urlsForUser,
+} = require("./helpers");
 /////////////////////////////////////////////////////////////////////
 // Initialization
 /////////////////////////////////////////////////////////////////////
@@ -68,43 +72,13 @@ const users = {
 };
 
 /////////////////////////////////////////////////////////////////////
-// Helper functions
-/////////////////////////////////////////////////////////////////////
-
-//To genarate ID
-function generateRandomString() {
-	let result = "";
-	const characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	const length = 6;
-
-	for (let i = 0; i < length; i++) {
-		const randomIndex = Math.floor(Math.random() * characters.length);
-		result += characters.charAt(randomIndex);
-	}
-	return result;
-}
-
-//To get return URLs where userID equals id of logged in user
-const urlsForUser = function (id) {
-	const filteredUrls = {};
-	for (const url in urlDatabase) {
-		console.log(urlDatabase, urlDatabase[url]);
-		if (urlDatabase[url].userID === id) {
-			filteredUrls[url] = urlDatabase[url];
-		}
-	}
-	console.log(`filteredUrls: ${filteredUrls}`);
-	return filteredUrls;
-};
-/////////////////////////////////////////////////////////////////////
 // Routes
 /////////////////////////////////////////////////////////////////////
 
 //SHOW RANDING PAGE
 app.get("/urls", (req, res) => {
 	const userId = req.session.user_id;
-	const userURL = urlsForUser(userId);
+	const userURL = urlsForUser(userId, urlDatabase);
 	const templateVars = {
 		user: users[req.session.user_id],
 		urls: userURL,
