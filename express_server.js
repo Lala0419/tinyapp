@@ -12,7 +12,7 @@ const getUserByEmail = require("./helpers");
 /////////////////////////////////////////////////////////////////////
 
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 
 /////////////////////////////////////////////////////////////////////
 // Configuration
@@ -85,16 +85,6 @@ function generateRandomString() {
 	return result;
 }
 
-// // To get user object by email
-// const getUserByEmail = (email, database) => {
-// 	for (const userId in database) {
-// 		if (database[userId].email === email) {
-// 			return database[userId];
-// 		}
-// 	}
-// 	return null;
-// };
-
 //To get return URLs where userID equals id of logged in user
 const urlsForUser = function (id) {
 	const filteredUrls = {};
@@ -130,6 +120,7 @@ app.get("/urls/new", (req, res) => {
 		user: users[userId],
 		urls: urlDatabase,
 	};
+
 	//Check to see if a user is logged in
 	if (userId) {
 		res.render("urls_new", templateVars);
@@ -160,6 +151,8 @@ app.post("/urls", (req, res) => {
 	const id = generateRandomString();
 	const longURL = req.body.longURL;
 	const userID = req.session.user_id;
+
+	//Check to see if use is loggedin
 	if (userID) {
 		urlDatabase[id] = {
 			longURL,
@@ -180,6 +173,7 @@ app.get("/u/:id", (req, res) => {
 	const shortURL = req.params.id;
 	const longURL = urlDatabase[shortURL].longURL;
 
+	//Check to see if the URL exists
 	if (longURL) {
 		res.redirect(longURL);
 	} else {
@@ -191,8 +185,12 @@ app.get("/u/:id", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
 	const shortURL = req.params.id;
 	const userID = req.session.user_id;
+
+	//Check to see if the shortURL exists in database
 	if (urlDatabase.hasOwnProperty(shortURL)) {
 		const url = urlDatabase[shortURL];
+
+		//check to see if the user and the ower of the URL matches
 		if (url.userID === userID) {
 			delete urlDatabase[shortURL];
 		} else {
@@ -207,8 +205,12 @@ app.post("/urls/:id", (req, res) => {
 	const shortURL = req.params.id;
 	const longURL = req.body.longURL;
 	const userID = req.session.user_id;
+
+	//Check to see if the shortURL exists in database
 	if (urlDatabase.hasOwnProperty(shortURL)) {
 		const url = urlDatabase[shortURL];
+
+		//check to see if the user and the ower of the URL matches
 		if (url.userID === userID) {
 			urlDatabase[shortURL].longURL = longURL;
 		} else {
@@ -222,7 +224,7 @@ app.post("/urls/:id", (req, res) => {
 app.get("/login", (req, res) => {
 	const userId = req.session.user_id;
 
-	//Check to see if the user is the user is logged in
+	//Check to see if the user ID exists
 	if (userId) {
 		res.redirect("/urls");
 	} else {
