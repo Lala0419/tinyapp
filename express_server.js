@@ -55,7 +55,6 @@ const urlDatabase = {
 		userID: "aJ48lW",
 	},
 };
-console.log("urlDatabase:", urlDatabase);
 
 //For users
 const users = {
@@ -98,7 +97,6 @@ app.get("/urls", (req, res) => {
 //SHOW NEW OR LOGIN PAGE
 app.get("/urls/new", (req, res) => {
 	const userId = req.session.user_id;
-	console.log(`userId, ${userId}`);
 	const templateVars = {
 		user: users[userId],
 		urls: urlDatabase,
@@ -130,7 +128,6 @@ app.get("/urls/:id", (req, res) => {
 
 //CREATE URL
 app.post("/urls", (req, res) => {
-	console.log(`req body:`, req.body);
 	const id = generateRandomString();
 	const longURL = req.body.longURL;
 	const userID = req.session.user_id;
@@ -258,9 +255,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
 	const id = generateRandomString();
 	const { email, password } = req.body;
-	console.log(`req.body: ${email}, ${password}`);
 	const hashedPassword = bcrypt.hashSync(password, 10);
-	console.log(hashedPassword);
 
 	// Check if email or password are empty
 	if (!email || !hashedPassword) {
