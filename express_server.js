@@ -154,14 +154,13 @@ app.post("/urls", (req, res) => {
 //REDIRECT URL
 app.get("/u/:id", (req, res) => {
 	const shortURL = req.params.id;
-	const longURL = urlDatabase[shortURL].longURL;
-
 	//Check to see if the URL exists
-	if (longURL) {
-		res.redirect(longURL);
-	} else {
-		res.status(404).send("Short URL not found");
+	if (!urlDatabase[shortURL]) {
+		return res.status(404).send("Short URL not found");
 	}
+
+	const longURL = urlDatabase[shortURL].longURL;
+	res.redirect(longURL);
 });
 
 //DELETE URL
