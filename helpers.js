@@ -30,12 +30,10 @@ function generateRandomString() {
 const urlsForUser = function (id, urlDatabase) {
 	const filteredUrls = {};
 	for (const url in urlDatabase) {
-		console.log(urlDatabase, urlDatabase[url]);
 		if (urlDatabase[url].userID === id) {
 			filteredUrls[url] = urlDatabase[url];
 		}
 	}
-	console.log(`filteredUrls: ${filteredUrls}`);
 	return filteredUrls;
 };
 
